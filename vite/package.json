@@ -23,7 +23,7 @@
 			]
 		},
 		"bring-builds": {
-			"command": "mkdir lib && find ../lib -type f ! -path '../lib/rollup/*' -print0 | xargs -0 cp --parents -t lib/",
+			"command": "mkdir lib && find ../lib -type f ! \\( -path '../lib/rollup/*' -o -path '../lib/test/*' \\) -print0 | xargs -0 cp --parents -t lib/",
 			"dependencies": [
 				"..:build:ts"
 			],
