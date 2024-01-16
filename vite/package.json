@@ -1,0 +1,38 @@
+{
+	"name": "vite-plugin-md-icon",
+	"description": "Minify md icons and font in your app.",
+	"version": "0.0.1",
+	"type": "module",
+	"main": "./lib/vite/index.js",
+	"module": "./lib/vite/index.js",
+	"types": "./lib/vite/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./lib/vite/index.js",
+			"default": "./lib/vite/index.js",
+			"types": "./lib/vite/index.d.ts"
+		}
+	},
+	"scripts": {
+		"build": "wireit"
+	},
+	"wireit": {
+		"build": {
+			"dependencies": [
+				"bring-builds"
+			]
+		},
+		"bring-builds": {
+			"command": "mkdir lib && find ../lib -type f ! -path '../lib/rollup/*' -print0 | xargs -0 cp --parents -t lib/",
+			"dependencies": [
+				"..:build:ts"
+			],
+			"output": [
+				"lib"
+			]
+		}
+	},
+	"dependencies": {
+		"mwc3-back-helpers": "^0.3.1"
+	}
+}
