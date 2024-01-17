@@ -29,28 +29,9 @@ import {
 	getStyleSheet,
 	getStyleSheetCachedDestination,
 } from '../cache.js';
-import {type MdIconPluginOptions} from '../types.js';
+import {type MdIconPluginOptions} from './types.js';
 
-function mdIcon(
-	options: Partial<
-		MdIconPluginOptions & {
-			symbols: {
-				/**
-				 * Base path to where the font should be accessed
-				 * from the public directory.
-				 *
-				 * For instance if the font path is `./public/fonts/symbols.woff2`,
-				 * then the base should be '/fonts'.
-				 * This way it ensures that the stylesheet knows how to access
-				 * the font file in production.
-				 *
-				 * @default '/'
-				 */
-				base: string;
-			};
-		}
-	> = {},
-): Plugin {
+function mdIcon(options: Partial<MdIconPluginOptions> = {}): Plugin {
 	options.include ??= 'src/**/*.{js,ts,jsx,tsx}';
 	options.includeComments ??= false;
 	options.variant ??= Variant.OUTLINED;
@@ -69,23 +50,22 @@ function mdIcon(
 				lookupFiles,
 				options.includeComments,
 			);
+
 			await cacheVariant(variant);
 
 			let codepoints: CodePoint[] = [];
 			if (iconNames.length > 0) {
-				const codepoints = convertIconNamesToCodePoints(iconNames);
-				await cacheCodePoints(codepoints);
+				codepoints = convertIconNamesToCodePoints(iconNames);
 			}
 
 			// Should we scan the code to find md-icon's ?
 			if (options.symbols) {
-				options.symbols.stylesheetPath ??= 'public/material-symbols.css';
-				options.symbols.fontPath ??= 'public/material-symbols.woff2';
+				options.symbols.stylesheetPath ??= 'dist/material-symbols.css';
+				options.symbols.fontPath ??= 'dist/material-symbols.woff2';
 				options.symbols.base ??= '/';
 
 				if (codepoints.length > 0) {
 					const retCode = await downloadFiles(variant, codepoints);
-					console.log(retCode);
 
 					// Should we reflect changes?
 					if (
@@ -103,7 +83,7 @@ function mdIcon(
 						// Font file was deleted?
 						!existsSync(options.symbols.fontPath)
 					) {
-						console.log('Yes should do something about it');
+						// console.log('Yes should do something about it');
 
 						const stylesheet = await getStyleSheet(variant);
 						if (stylesheet === null) {
@@ -148,6 +128,9 @@ function mdIcon(
 					}
 				}
 			}
+
+			// Always cache codepoints
+			await cacheCodePoints(codepoints);
 		},
 
 		transform(code, id) {
@@ -168,8 +151,9 @@ function mdIcon(
 }
 
 export {
-	transformSymbolsLink,
+	minifySymbolsLink,
 	removeSymbolsLink,
+	replaceSymbolsLink,
 } from '../html-transformation.js';
 export {mdIcon};
 export default mdIcon;

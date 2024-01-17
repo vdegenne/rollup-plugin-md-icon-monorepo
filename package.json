@@ -2,23 +2,25 @@
 	"name": "@rollup-plugin-md-icon/monorepo",
 	"description": "Minify md icons and font in your app",
 	"type": "module",
-	"workspaces": [
-		"rollup",
-		"vite"
-	],
 	"scripts": {
 		"build": "wireit",
-		"test": "wireit"
+		"test": "wireit",
+		"prepare": "husky install"
 	},
 	"files": [],
 	"devDependencies": {
+		"@rollup/plugin-virtual": "^3.0.2",
 		"@rollup/pluginutils": "^5.1.0",
 		"@types/chai": "^4.3.11",
 		"@types/mocha": "^10.0.6",
 		"@types/node": "^20.11.2",
+		"@web/rollup-plugin-html": "^2.1.2",
 		"chai": "^5.0.0",
 		"fast-glob": "^3.3.2",
+		"husky": "^8.0.3",
+		"lint-staged": "^15.2.0",
 		"mocha": "^10.2.0",
+		"mwc3-back-helpers": "^0.5.0",
 		"rollup": "^4.9.5",
 		"typescript": "^5.3.3",
 		"vite": "^5.0.11",
@@ -50,7 +52,7 @@
 			]
 		}
 	},
-	"dependencies": {
-		"mwc3-back-helpers": "^0.5.0"
+	"lint-staged": {
+		"**/*.md": "prettier --no-use-tabs --single-quote --no-bracket-spacing --write"
 	}
 }

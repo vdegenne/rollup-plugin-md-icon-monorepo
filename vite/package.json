@@ -33,6 +33,7 @@
 		}
 	},
 	"dependencies": {
-		"mwc3-back-helpers": "^0.3.1"
+		"fast-glob": "^3.3.2",
+		"mwc3-back-helpers": "^0.5.0"
 	}
 }

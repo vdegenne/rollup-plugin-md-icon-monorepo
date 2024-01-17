@@ -2,7 +2,7 @@ import {expect} from 'chai';
 import {
 	SYMBOLS_LINK_REGEX,
 	removeSymbolsLink,
-	transformSymbolsLink,
+	minifySymbolsLink,
 } from '../html-transformation.js';
 import {
 	cacheCodePoints,
@@ -53,7 +53,7 @@ describe('Html Transformation', () => {
 	it("throws if link can't be found", async () => {
 		let err: Error | undefined;
 		try {
-			transformSymbolsLink('will throw');
+			minifySymbolsLink('will throw');
 		} catch (error: any) {
 			err = error;
 		}
@@ -68,7 +68,7 @@ describe('Html Transformation', () => {
 		await cacheCodePoints(codepoints);
 		await cacheVariant(Variant.SHARP);
 
-		const out = transformSymbolsLink(`
+		const out = minifySymbolsLink(`
 <head>
   <link rel="stylesheet" href="..." id="symbols" />
 </head>

@@ -1,11 +1,23 @@
 {
 	"name": "rollup-plugin-md-icon",
 	"description": "Minify md icons and font in your app.",
-	"version": "0.0.1",
+	"version": "0.0.5",
 	"type": "module",
 	"main": "./lib/rollup/index.js",
 	"module": "./lib/rollup/index.js",
 	"types": "./lib/rollup/index.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/vdegenne/rollup-plugin-md-icon.git"
+	},
+	"keywords": [
+		"rollup",
+		"md-icon",
+		"material-web",
+		"mwc",
+		"rollup-plugin",
+		"minify"
+	],
 	"exports": {
 		".": {
 			"import": "./lib/rollup/index.js",
@@ -14,7 +26,8 @@
 		}
 	},
 	"scripts": {
-		"build": "wireit"
+		"build": "wireit",
+		"prepare": "husky install"
 	},
 	"wireit": {
 		"build": {
@@ -41,6 +54,19 @@
 		}
 	},
 	"dependencies": {
-		"mwc3-back-helpers": "^0.3.1"
+		"fast-glob": "^3.3.2",
+		"mwc3-back-helpers": "^0.5.0"
+	},
+	"files": [
+		"/lib",
+		"/all-symbols"
+	],
+	"devDependencies": {
+		"husky": "^8.0.3",
+		"lint-staged": "^15.2.0",
+		"prettier": "^3.2.4"
+	},
+	"lint-staged": {
+		"**/*.md": "prettier --no-use-tabs --single-quote --no-bracket-spacing --write"
 	}
 }
