@@ -122,14 +122,19 @@ function mdIcon(options: Partial<MdIconPluginOptions> = {}): Plugin {
 							(async () => {
 								const dest = options.symbols!.fontPath!;
 								await mkdir(dirname(dest), {recursive: true});
-								cp('.mdicon/material-symbols.woff2', dest, {recursive: true});
+								await cp('.mdicon/material-symbols.woff2', dest, {
+									recursive: true,
+								});
 							})(),
 						]);
 					}
 				}
 			}
 
-			// Always cache codepoints
+			// Caching the codepoints needs to be done at the very
+			// end because in 'local' mode the given codepoints are
+			// compared with the cached ones to determine if the files
+			// need to be downloaded/updated or not.
 			await cacheCodePoints(codepoints);
 		},
 

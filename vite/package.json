@@ -6,6 +6,19 @@
 	"main": "./lib/vite/index.js",
 	"module": "./lib/vite/index.js",
 	"types": "./lib/vite/index.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/vdegenne/vite-plugin-md-icon"
+	},
+	"keywords": [
+		"vite",
+		"vite-plugin",
+		"md-icon",
+		"material-web",
+		"material-3",
+		"mwc",
+		"minify"
+	],
 	"exports": {
 		".": {
 			"import": "./lib/vite/index.js",
@@ -14,12 +27,14 @@
 		}
 	},
 	"scripts": {
-		"build": "wireit"
+		"build": "wireit",
+		"prepare": "husky install"
 	},
 	"wireit": {
 		"build": {
 			"dependencies": [
-				"bring-builds"
+				"bring-builds",
+				"copy-all-symbols"
 			]
 		},
 		"bring-builds": {
@@ -30,10 +45,29 @@
 			"output": [
 				"lib"
 			]
+		},
+		"copy-all-symbols": {
+			"#comment": "this provides access to full symbols font for when dev'ing offline",
+			"command": "cp -r ../node_modules/mwc3-back-helpers/all-symbols .",
+			"output": [
+				"all-symbols"
+			]
 		}
 	},
 	"dependencies": {
 		"fast-glob": "^3.3.2",
 		"mwc3-back-helpers": "^0.5.0"
+	},
+	"devDependencies": {
+		"husky": "^8.0.3",
+		"lint-staged": "^15.2.0",
+		"prettier": "^3.2.4"
+	},
+	"files": [
+		"/lib",
+		"/all-symbols"
+	],
+	"lint-staged": {
+		"**/*.md": "prettier --single-quote --no-bracket-spacing --no-use-tabs --write"
 	}
 }
