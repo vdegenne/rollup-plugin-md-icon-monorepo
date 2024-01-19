@@ -1,18 +1,21 @@
-import {createFilter, ResolvedConfig, type Plugin} from 'vite';
-import {MdIconPluginOptions, TransformationFunction} from './types.js';
-import {
-	convertIconNamesToCodePoints,
-	findIconNamesFromFiles,
-	replaceIconNamesWithCodePoints,
-	Variant,
-} from 'mwc3-back-helpers/md-icons.js';
+import fastGlob from 'fast-glob';
 import {
 	CodePoint,
 	OutlinedCodePointsMap,
 	RoundedCodePointsMap,
 	SharpCodePointsMap,
 } from 'mwc3-back-helpers/codepoints-maps.js';
-import fastGlob from 'fast-glob';
+import {
+	Variant,
+	convertIconNamesToCodePoints,
+	findIconNamesFromFiles,
+	replaceIconNamesWithCodePoints,
+} from 'mwc3-back-helpers/md-icons.js';
+import {replaceSymbolsFontUrlInStyleSheet} from 'mwc3-back-helpers/stylesheet.js';
+import {existsSync} from 'node:fs';
+import {cp, mkdir, writeFile} from 'node:fs/promises';
+import {basename, dirname, join} from 'node:path';
+import {ResolvedConfig, createFilter, type Plugin} from 'vite';
 import {
 	cacheCodePoints,
 	cacheFontBase,
@@ -30,10 +33,7 @@ import {
 	removeSymbolsLink,
 	replaceSymbolsLink,
 } from '../html-transformation.js';
-import {existsSync} from 'node:fs';
-import {basename, dirname, join} from 'node:path';
-import {replaceSymbolsFontUrlInStyleSheet} from 'mwc3-back-helpers/fonts.js';
-import {cp, mkdir, writeFile} from 'node:fs/promises';
+import {type MdIconPluginOptions} from './types.js';
 
 function mdIcon(options: Partial<MdIconPluginOptions> = {}): Plugin {
 	options.include ??= 'src/**/*.{js,ts,jsx,tsx}';
@@ -71,6 +71,7 @@ function mdIcon(options: Partial<MdIconPluginOptions> = {}): Plugin {
 					codepoints = convertIconNamesToCodePoints(iconNames);
 				}
 
+				options.mode ??= 'fonts.googleapis.com';
 				switch (options.mode) {
 					case 'fonts.googleapis.com':
 						// We cache the codepoints because `minifySymbolsLink`
@@ -108,7 +109,7 @@ function mdIcon(options: Partial<MdIconPluginOptions> = {}): Plugin {
 							// Font file was deleted?
 							!existsSync(options.fontPath)
 						) {
-							console.log('Yes should do something about it');
+							// console.log('Yes should do something about it');
 
 							const stylesheet = await getStyleSheet(variant);
 							if (stylesheet === null) {

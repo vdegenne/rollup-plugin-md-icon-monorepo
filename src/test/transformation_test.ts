@@ -1,18 +1,12 @@
 import {expect} from 'chai';
+import {CodePoint, Variant} from 'mwc3-back-helpers';
+import {cacheCodePoints, cacheVariant} from '../cache.js';
 import {
 	SYMBOLS_LINK_REGEX,
-	removeSymbolsLink,
 	minifySymbolsLink,
+	removeSymbolsLink,
 } from '../html-transformation.js';
-import {
-	cacheCodePoints,
-	cacheVariant,
-	getCachedCodePoints,
-	getCachedVariant,
-} from '../cache.js';
 import {resetCache} from './utils.js';
-import {existsSync} from 'fs';
-import {CodePoint, Variant} from 'mwc3-back-helpers';
 
 describe('Html Transformation', () => {
 	beforeEach(resetCache);
@@ -75,7 +69,7 @@ describe('Html Transformation', () => {
 `);
 		expect(out).to.equal(`
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&text=%EE%99%8E%EE%A5%91%EF%A2%8E" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Sharp&text=%EE%99%8E%EE%A5%91%EF%A2%8E" rel="stylesheet" />
 </head>
 `);
 	});

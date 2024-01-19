@@ -1,7 +1,7 @@
 {
 	"name": "rollup-plugin-md-icon",
 	"description": "Minify md icons and font in your app.",
-	"version": "0.0.5",
+	"version": "1.0.0",
 	"type": "module",
 	"main": "./lib/rollup/index.js",
 	"module": "./lib/rollup/index.js",
@@ -14,7 +14,6 @@
 		"rollup",
 		"md-icon",
 		"material-web",
-		"material-3",
 		"mwc",
 		"rollup-plugin",
 		"minify"
@@ -56,17 +55,18 @@
 	},
 	"dependencies": {
 		"fast-glob": "^3.3.2",
-		"mwc3-back-helpers": "^0.5.0"
-	},
-	"devDependencies": {
-		"husky": "^8.0.3",
-		"lint-staged": "^15.2.0",
-		"prettier": "^3.2.4"
+		"mwc3-back-helpers": "^1.0.1"
 	},
 	"files": [
 		"/lib",
 		"/all-symbols"
 	],
+	"devDependencies": {
+		"@changesets/cli": "^2.27.1",
+		"husky": "^8.0.3",
+		"lint-staged": "^15.2.0",
+		"prettier": "^3.2.4"
+	},
 	"lint-staged": {
 		"**/*.md": "prettier --no-use-tabs --single-quote --no-bracket-spacing --write"
 	}

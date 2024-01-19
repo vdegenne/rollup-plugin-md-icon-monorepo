@@ -1,17 +1,16 @@
 import {expect} from 'chai';
 import {existsSync} from 'fs';
-import {rm} from 'fs/promises';
 import {Variant} from 'mwc3-back-helpers';
 import {
 	CACHED_FILEPATH,
 	cacheCodePoints,
-	downloadFiles,
-	getCachedCodePoints,
-	codePointsDifferentFromCache,
-	getStyleSheetCachedDestination,
-	getFontCachedDestination,
 	cacheFontDestination,
 	cacheStyleSheetDestination,
+	codePointsDifferentFromCache,
+	downloadFiles,
+	getCachedCodePoints,
+	getFontCachedDestination,
+	getStyleSheetCachedDestination,
 } from '../cache.js';
 import {resetCache} from './utils.js';
 

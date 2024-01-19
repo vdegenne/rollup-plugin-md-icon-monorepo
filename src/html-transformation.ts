@@ -1,4 +1,4 @@
-import {constructSymbolsFontStyleSheetUrl} from 'mwc3-back-helpers/fonts.js';
+import {constructSymbolsFontStyleSheetUrl} from 'mwc3-back-helpers/stylesheet.js';
 import {getCachedCodePoints, getCachedVariant} from './cache.js';
 
 export const SYMBOLS_LINK_REGEX = /<link\s+[^>]*id=["']?symbols["']?[^>]*>/;

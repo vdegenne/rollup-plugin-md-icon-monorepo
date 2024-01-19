@@ -8,13 +8,13 @@ import {
 	RoundedCodePointsMap,
 	SharpCodePointsMap,
 } from 'mwc3-back-helpers/codepoints-maps.js';
-import {replaceSymbolsFontUrlInStyleSheet} from 'mwc3-back-helpers/fonts.js';
 import {
 	Variant,
 	convertIconNamesToCodePoints,
 	findIconNamesFromFiles,
 	replaceIconNamesWithCodePoints,
 } from 'mwc3-back-helpers/md-icons.js';
+import {replaceSymbolsFontUrlInStyleSheet} from 'mwc3-back-helpers/stylesheet.js';
 import {basename, dirname, join} from 'path';
 import {type Plugin} from 'rollup';
 import {
@@ -64,70 +64,74 @@ function mdIcon(options: Partial<MdIconPluginOptions> = {}): Plugin {
 				options.symbols.fontPath ??= 'dist/material-symbols.woff2';
 				options.symbols.base ??= '/';
 
-				if (codepoints.length > 0) {
-					const retCode = await downloadFiles(variant, codepoints);
+				const retCode = await downloadFiles(
+					variant,
+					codepoints.length > 0
+						? codepoints
+						: // Small hack to avoid downloaded a 3MB font file,
+							// We add at least one icon to have a minimal font file size.
+							['f866'],
+				);
 
-					// Should we reflect changes?
-					if (
-						// New downloaded files?
-						retCode == 1 ||
-						// User changed stylesheet destination path?
-						getStyleSheetCachedDestination() !==
-							options.symbols.stylesheetPath ||
-						// User changed font destination path?
-						getFontCachedDestination() !== options.symbols.fontPath ||
-						// User changed font base path?
-						getFontBase() !== options.symbols.base ||
-						// Stylesheet was deleted?
-						!existsSync(options.symbols.stylesheetPath) ||
-						// Font file was deleted?
-						!existsSync(options.symbols.fontPath)
-					) {
-						// console.log('Yes should do something about it');
+				// Should we reflect changes?
+				if (
+					// New downloaded files?
+					retCode == 1 ||
+					// User changed stylesheet destination path?
+					getStyleSheetCachedDestination() !== options.symbols.stylesheetPath ||
+					// User changed font destination path?
+					getFontCachedDestination() !== options.symbols.fontPath ||
+					// User changed font base path?
+					getFontBase() !== options.symbols.base ||
+					// Stylesheet was deleted?
+					!existsSync(options.symbols.stylesheetPath) ||
+					// Font file was deleted?
+					!existsSync(options.symbols.fontPath)
+				) {
+					// console.log('Yes should do something about it');
 
-						const stylesheet = await getStyleSheet(variant);
-						if (stylesheet === null) {
-							throw new Error(
-								"Couldn't get the content of the stylesheet, check your internet connection.",
-							);
-						}
-						await cacheStyleSheetDestination(
-							options.symbols.stylesheetPath,
-							false,
+					const stylesheet = await getStyleSheet(variant);
+					if (stylesheet === null) {
+						throw new Error(
+							"Couldn't get the content of the stylesheet, check your internet connection.",
 						);
-						await cacheFontDestination(options.symbols.fontPath, false);
-						await cacheFontBase(options.symbols.base);
-
-						// Determine public path to font file
-						const fontPath = join(
-							options.symbols.base,
-							basename(options.symbols.fontPath),
-						);
-						const modifiedSS = replaceSymbolsFontUrlInStyleSheet(
-							stylesheet,
-							fontPath,
-						);
-
-						// TODO: Should we delete previously copied files?
-
-						// Moving files
-						await Promise.all([
-							// Stylesheet
-							(async () => {
-								const dest = options.symbols!.stylesheetPath!;
-								await mkdir(dirname(dest), {recursive: true});
-								await writeFile(dest, modifiedSS);
-							})(),
-							// Font file
-							(async () => {
-								const dest = options.symbols!.fontPath!;
-								await mkdir(dirname(dest), {recursive: true});
-								await cp('.mdicon/material-symbols.woff2', dest, {
-									recursive: true,
-								});
-							})(),
-						]);
 					}
+					await cacheStyleSheetDestination(
+						options.symbols.stylesheetPath,
+						false,
+					);
+					await cacheFontDestination(options.symbols.fontPath, false);
+					await cacheFontBase(options.symbols.base);
+
+					// Determine public path to font file
+					const fontPath = join(
+						options.symbols.base,
+						basename(options.symbols.fontPath),
+					);
+					const modifiedSS = replaceSymbolsFontUrlInStyleSheet(
+						stylesheet,
+						fontPath,
+					);
+
+					// TODO: Should we delete previously copied files?
+
+					// Moving files
+					await Promise.all([
+						// Stylesheet
+						(async () => {
+							const dest = options.symbols!.stylesheetPath!;
+							await mkdir(dirname(dest), {recursive: true});
+							await writeFile(dest, modifiedSS);
+						})(),
+						// Font file
+						(async () => {
+							const dest = options.symbols!.fontPath!;
+							await mkdir(dirname(dest), {recursive: true});
+							await cp('.mdicon/material-symbols.woff2', dest, {
+								recursive: true,
+							});
+						})(),
+					]);
 				}
 			}
 
